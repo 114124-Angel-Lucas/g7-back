@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  mysql:
+    container_name: database-container
+    image: mysql:8.0
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password'
+    volumes:
+      - ./mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql-data:/var/lib/mysql
+    networks:
+      service-net-app:
+  accesses:
+    container_name: accesses-container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/accesses
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=password
+      - TZ=America/Argentina/Buenos_Aires
+      - SPRING_RABBITMQ_HOST=rabbitmq  # Adding RabbitMQ host for Spring Boot
+      - SPRING_RABBITMQ_PORT=5672      # Default RabbitMQ port
+      - SPRING_RABBITMQ_USERNAME=user  # RabbitMQ username
+      - SPRING_RABBITMQ_PASSWORD=password  # RabbitMQ password
+    ports:
+      - "8080:8080"
+    networks:
+      service-net-app:
+    restart: on-failure
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"  # RabbitMQ port
+      - "15672:15672"  # RabbitMQ management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: user  # Default RabbitMQ username
+      RABBITMQ_DEFAULT_PASS: password  # Default RabbitMQ password
+    networks:
+      service-net-app:
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+networks:
+  service-net-app:
+
+volumes:
+  mysql-data:
+  rabbitmq_data:

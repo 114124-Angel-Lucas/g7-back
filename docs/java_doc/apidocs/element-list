@@ -1,0 +1,13 @@
+ar.edu.utn.frc.tup.lc.iv
+ar.edu.utn.frc.tup.lc.iv.clients
+ar.edu.utn.frc.tup.lc.iv.configs
+ar.edu.utn.frc.tup.lc.iv.controllers
+ar.edu.utn.frc.tup.lc.iv.dtos.common
+ar.edu.utn.frc.tup.lc.iv.dtos.common.authorized
+ar.edu.utn.frc.tup.lc.iv.dtos.common.authorizedRanges
+ar.edu.utn.frc.tup.lc.iv.dtos.common.visitor
+ar.edu.utn.frc.tup.lc.iv.entities
+ar.edu.utn.frc.tup.lc.iv.models
+ar.edu.utn.frc.tup.lc.iv.repositories
+ar.edu.utn.frc.tup.lc.iv.services
+ar.edu.utn.frc.tup.lc.iv.services.imp
