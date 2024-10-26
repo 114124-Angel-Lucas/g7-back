@@ -49,6 +49,7 @@ public class AccessesService implements IAccessesService {
                     accessDTO.setName(accessEntity.getAuth().getVisitor().getName());
                     accessDTO.setLastName(accessEntity.getAuth().getVisitor().getLastName());
                     accessDTO.setDocNumber(accessEntity.getAuth().getVisitor().getDocNumber());
+                    accessDTO.setVisitorType(accessEntity.getAuth().getVisitorType());
                     return accessDTO;
                 })
                 .collect(Collectors.toList());

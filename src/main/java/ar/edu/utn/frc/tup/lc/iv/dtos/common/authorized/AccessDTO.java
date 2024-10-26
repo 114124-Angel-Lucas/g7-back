@@ -3,6 +3,7 @@ package ar.edu.utn.frc.tup.lc.iv.dtos.common.authorized;
 import ar.edu.utn.frc.tup.lc.iv.models.ActionTypes;
 import ar.edu.utn.frc.tup.lc.iv.models.DocumentType;
 import ar.edu.utn.frc.tup.lc.iv.models.VehicleTypes;
+import ar.edu.utn.frc.tup.lc.iv.models.VisitorType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,12 @@ public class AccessDTO {
      */
     @JsonProperty("last_name")
     private String lastName;
+
+    /**
+     * The last name of the visitor.
+     */
+    @JsonProperty("visitor_type")
+    private VisitorType visitorType;
 
     /**
      * The document number of the visitor.
