@@ -102,8 +102,10 @@ public class VisitorService implements IVisitorService {
         }
         List<VisitorEntity> visitorEntities = visitorRepository.findAll();
         for (VisitorEntity visitorEntity : visitorEntities) {
-            VisitorDTO visitor = modelMapper.map(visitorEntity, VisitorDTO.class);
-            visitors.put(visitorEntity.getVisitorId(), visitor);
+            if (!visitors.containsKey(visitorEntity.getVisitorId())) {
+                VisitorDTO visitor = modelMapper.map(visitorEntity, VisitorDTO.class);
+                visitors.put(visitorEntity.getVisitorId(), visitor);
+            }
         }
         return new ArrayList<>(visitors.values());
 
