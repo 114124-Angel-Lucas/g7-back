@@ -99,8 +99,11 @@ public class VisitorService implements IVisitorService {
                 visitor.setVisitorTypes(types);
                 visitors.put(auth.getVisitor().getVisitorId(), visitor);
             }
-
-
+        }
+        List<VisitorEntity> visitorEntities = visitorRepository.findAll();
+        for (VisitorEntity visitorEntity : visitorEntities) {
+            VisitorDTO visitor = modelMapper.map(visitorEntity, VisitorDTO.class);
+            visitors.put(visitorEntity.getVisitorId(), visitor);
         }
         return new ArrayList<>(visitors.values());
 

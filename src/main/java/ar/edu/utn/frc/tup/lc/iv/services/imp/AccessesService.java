@@ -52,7 +52,7 @@ public class AccessesService implements IAccessesService {
                     accessDTO.setDocNumber(accessEntity.getAuth().getVisitor().getDocNumber());
                     accessDTO.setVisitorType(accessEntity.getAuth().getVisitorType());
                     return accessDTO;
-                })
+                }).sorted(Comparator.comparing(AccessDTO::getActionDate).reversed())
                 .collect(Collectors.toList());
     }
 
