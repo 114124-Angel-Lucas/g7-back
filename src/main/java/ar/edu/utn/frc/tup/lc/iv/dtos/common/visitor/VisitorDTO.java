@@ -1,6 +1,7 @@
 package ar.edu.utn.frc.tup.lc.iv.dtos.common.visitor;
 
 import ar.edu.utn.frc.tup.lc.iv.models.DocumentType;
+import ar.edu.utn.frc.tup.lc.iv.models.VisitorType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * DTO for the Authorized entity that represents an authorized person.
@@ -56,4 +58,8 @@ public class VisitorDTO {
      */
     @JsonProperty("is_active")
     private boolean isActive;
+
+
+    @JsonProperty("visitor_types")
+    private List<VisitorType> visitorTypes;
 }

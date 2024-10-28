@@ -9,4 +9,8 @@ public enum VehicleTypes {
      * Enum for document types.
      */
     CAR,
+    TRUCK,
+    PICKUP,
+    MOTORBIKE,
+    FOOT,
 }

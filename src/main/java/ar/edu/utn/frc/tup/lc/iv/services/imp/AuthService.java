@@ -1,7 +1,7 @@
 package ar.edu.utn.frc.tup.lc.iv.services.imp;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 
 import ar.edu.utn.frc.tup.lc.iv.dtos.common.authorized.*;
 import ar.edu.utn.frc.tup.lc.iv.dtos.common.authorizedRanges.RegisterAuthorizationRangesDTO;
@@ -12,8 +12,6 @@ import ar.edu.utn.frc.tup.lc.iv.models.ActionTypes;
 import ar.edu.utn.frc.tup.lc.iv.models.AuthRange;
 import ar.edu.utn.frc.tup.lc.iv.models.VisitorType;
 import jakarta.transaction.Transactional;
-
-import java.util.Arrays;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +29,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import java.util.ArrayList;
-
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -191,6 +185,29 @@ public class AuthService implements IAuthService {
 
     @Override
     public AccessDTO authorizeVisitor(AccessDTO accessDTO, Long guardID) {
+        if (accessDTO.getAction().equals(ActionTypes.EXIT)){
+            VisitorEntity visitorEntity = visitorRepository.findByDocNumber(accessDTO.getDocNumber());
+            List<AuthEntity> authEntities = authRepository.findByVisitor(visitorEntity);
+            AuthEntity authEntity = authEntities.stream()
+                    .max(Comparator.comparing(AuthEntity::getCreatedDate))
+                    .orElse(null);;
+            AccessEntity accessEntity;
+            if (authEntity != null) {
+                accessEntity = new AccessEntity(
+                        guardID, guardID, authEntity, accessDTO.getAction(), LocalDateTime.now(), accessDTO.getVehicleType(),
+                        accessDTO.getVehicleReg(), accessDTO.getVehicleDescription(), authEntity.getPlotId(),
+                        authEntity.getExternalID(), accessDTO.getComments());
+            }else {
+                accessEntity = new AccessEntity(
+                        guardID, guardID, null, accessDTO.getAction(), LocalDateTime.now(), accessDTO.getVehicleType(),
+                        accessDTO.getVehicleReg(), accessDTO.getVehicleDescription(), null,
+                        null, accessDTO.getComments());
+            }
+
+
+            return accessesService.registerAccess(accessEntity);
+
+        }
         List<AuthDTO> authDTOs = getValidAuthsByDocNumber(accessDTO.getDocNumber());
 
         if (authDTOs.size() < 1) {

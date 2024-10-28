@@ -1,24 +1,20 @@
 package ar.edu.utn.frc.tup.lc.iv.services.imp;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import ar.edu.utn.frc.tup.lc.iv.dtos.common.PaginatedResponse;
 import ar.edu.utn.frc.tup.lc.iv.dtos.common.visitor.VisitorDTO;
 import ar.edu.utn.frc.tup.lc.iv.dtos.common.visitor.VisitorRequest;
+import ar.edu.utn.frc.tup.lc.iv.entities.AuthEntity;
 import ar.edu.utn.frc.tup.lc.iv.entities.VisitorEntity;
+import ar.edu.utn.frc.tup.lc.iv.models.VisitorType;
+import ar.edu.utn.frc.tup.lc.iv.repositories.AuthRepository;
 import ar.edu.utn.frc.tup.lc.iv.repositories.VisitorRepository;
 import ar.edu.utn.frc.tup.lc.iv.services.IVisitorService;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import lombok.NoArgsConstructor;
 
@@ -36,6 +32,9 @@ public class VisitorService implements IVisitorService {
     @Autowired
     private VisitorRepository visitorRepository;
 
+    @Autowired
+    private AuthRepository authRepository;
+
     /**
      * ModelMapper for converting between entities and DTOs.
      */
@@ -52,7 +51,8 @@ public class VisitorService implements IVisitorService {
      */
     @Override
     public PaginatedResponse<VisitorDTO> getAllVisitors(int page, int size, String name, String lastName, String filter) {
-        Pageable pageable = PageRequest.of(page, size,
+        return null;
+        /* Pageable pageable = PageRequest.of(page, size,
                 Sort.by("lastName").and(Sort.by("name")));
 
         Page<VisitorEntity> visitorPage = visitorRepository.findAllByActive(true, pageable);
@@ -76,7 +76,34 @@ public class VisitorService implements IVisitorService {
                 })
                 .collect(Collectors.toList());
 
-        return new PaginatedResponse<>(visitorDTOs, visitorPage.getTotalElements());
+        return new PaginatedResponse<>(visitorDTOs, visitorPage.getTotalElements());*/
+    }
+
+    @Override
+    public List<VisitorDTO> getAllVisitors() {
+        Map<Long, VisitorDTO> visitors = new HashMap<>();
+
+        List<AuthEntity> auths = authRepository.findAll();
+        for (AuthEntity auth : auths) {
+            if (visitors.containsKey(auth.getVisitor().getVisitorId())) {
+                VisitorDTO visitor = visitors.get(auth.getVisitor().getVisitorId());
+                if (!visitor.getVisitorTypes().contains(auth.getVisitorType())){
+                    visitor.getVisitorTypes().add(auth.getVisitorType());
+                    visitors.put(auth.getVisitor().getVisitorId(), visitor);
+                }
+
+            } else {
+                VisitorDTO visitor = modelMapper.map(auth.getVisitor(), VisitorDTO.class);
+                List<VisitorType> types = new ArrayList<>();
+                types.add(auth.getVisitorType());
+                visitor.setVisitorTypes(types);
+                visitors.put(auth.getVisitor().getVisitorId(), visitor);
+            }
+
+
+        }
+        return new ArrayList<>(visitors.values());
+
     }
 
     /**
@@ -87,8 +114,10 @@ public class VisitorService implements IVisitorService {
      */
     @Override
     public VisitorDTO saveOrUpdateVisitor(VisitorRequest visitorRequest, Long visitorId) {
-        // VisitorEntity existVisitorEntity =
-        // visitorRepository.findByDocNumber(visitorRequest.getDocNumber());
+        VisitorEntity existVisitorEntitySaved = visitorRepository.findByDocNumber(visitorRequest.getDocNumber());
+        if(existVisitorEntitySaved != null) {
+            return null;
+        }
 
         VisitorEntity existVisitorEntity = new VisitorEntity();
 
@@ -104,6 +133,7 @@ public class VisitorService implements IVisitorService {
             visitorEntity.setCreatedDate(LocalDateTime.now());
         }
 
+        visitorEntity.setActive(true);
         visitorEntity.setName(visitorRequest.getName());
         visitorEntity.setLastName(visitorRequest.getLastName());
         visitorEntity.setDocNumber(visitorRequest.getDocNumber());
@@ -152,7 +182,7 @@ public class VisitorService implements IVisitorService {
 
     /**
      * fetch visitor by id.
-     * 
+     *
      * @param id unique identifier of the visitor
      * @return visitorDto with the given id
      */

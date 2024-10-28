@@ -20,6 +20,8 @@ public interface IVisitorService {
      */
     PaginatedResponse<VisitorDTO> getAllVisitors(int page, int size, String name, String lastName, String filter);
 
+    List<VisitorDTO> getAllVisitors();
+
     /**
      * Creates a new visitor or update based on the provided data.
      *

@@ -1,13 +1,10 @@
 package ar.edu.utn.frc.tup.lc.iv.controllers;
 
 import ar.edu.utn.frc.tup.lc.iv.dtos.common.authorized.AccessDTO;
-import ar.edu.utn.frc.tup.lc.iv.dtos.common.authorized.AuthDTO;
-import ar.edu.utn.frc.tup.lc.iv.dtos.common.authorizedRanges.VisitorAuthRequest;
+import ar.edu.utn.frc.tup.lc.iv.models.ActionTypes;
 import ar.edu.utn.frc.tup.lc.iv.models.VisitorType;
 import ar.edu.utn.frc.tup.lc.iv.services.IAccessesService;
-import ar.edu.utn.frc.tup.lc.iv.services.IAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,8 +42,8 @@ public class AccessController {
     public List<AccessDTO> getAllExits() {
         return accessesService.getAllExits();
     }
-    @GetMapping("/missing-exits")
-    public List<AccessDTO> getMissingExits() {
-        return accessesService.getMissingExits();
+    @GetMapping("/check-access")
+    public Boolean checkAccess(@RequestParam String carPlate, @RequestParam ActionTypes action) {
+        return accessesService.canDoAction(carPlate, action);
     }
 }

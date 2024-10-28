@@ -3,6 +3,7 @@ package ar.edu.utn.frc.tup.lc.iv.services;
 import ar.edu.utn.frc.tup.lc.iv.dtos.common.authorized.AccessDTO;
 import ar.edu.utn.frc.tup.lc.iv.dtos.common.authorized.AuthDTO;
 import ar.edu.utn.frc.tup.lc.iv.entities.AccessEntity;
+import ar.edu.utn.frc.tup.lc.iv.models.ActionTypes;
 import ar.edu.utn.frc.tup.lc.iv.models.VisitorType;
 
 import java.util.List;
@@ -24,6 +25,6 @@ public interface IAccessesService {
     List<AccessDTO> getAllExits();
     List<AccessDTO> getAllAccessByType(VisitorType visitorType);
     List<AccessDTO> getAllAccessByTypeAndExternalID(VisitorType visitorType, Long externalId);
-    List<AccessDTO> getMissingExits();
+    Boolean canDoAction(String carPlate, ActionTypes action);
     AccessDTO registerAccess(AccessEntity accessEntity);
 }

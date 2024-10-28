@@ -1,7 +1,6 @@
 package ar.edu.utn.frc.tup.lc.iv.entities;
 
 import ar.edu.utn.frc.tup.lc.iv.models.DocumentType;
-import ar.edu.utn.frc.tup.lc.iv.models.VisitorType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -67,8 +66,8 @@ public class VisitorEntity extends AuditBaseEntity {
     /**
      * If a visitor is active or not.
      */
-    @Column(name = "is_active")
-    private boolean isActive;
+    @Column(name = "active")
+    private boolean active;
 
     /**
      * Constant for the maximum length of the 'name' field.

@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -99,8 +100,12 @@ public class AccessesService implements IAccessesService {
      * @return
      */
     @Override
-    public List<AccessDTO> getMissingExits() {
-        return null;
+    public Boolean canDoAction(String carPlate, ActionTypes action) {
+        AccessEntity acc = accessesRepository.findByVehicleReg(carPlate).stream()
+                .max(Comparator.comparing(AccessEntity::getActionDate))
+                .orElse(null);
+        if (acc == null) {return true;}
+        return !acc.getAction().equals(action);
     }
 
     /**

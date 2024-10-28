@@ -40,12 +40,13 @@ public class VisitorController {
      * @return a list of VisitorDTO objects
      */
     @GetMapping()
-    public PaginatedResponse<VisitorDTO> getAllVisitors(@RequestParam(defaultValue = "0") int page,
+    public List<VisitorDTO> getAllVisitors(@RequestParam(defaultValue = "0") int page,
                                                         @RequestParam(defaultValue = "10") int size,
                                                         @RequestParam(required = false) String name,
                                                         @RequestParam(required = false) String lastName,
                                                         @RequestParam(required = false) String filter) {
-        return visitorService.getAllVisitors(page, size, name, lastName, filter);
+        return visitorService.getAllVisitors();
+        //return visitorService.getAllVisitors(page, size, name, lastName, filter);
     }
 
     /**
@@ -70,7 +71,11 @@ public class VisitorController {
     @PutMapping()
     public ResponseEntity<VisitorDTO> generateVisitor(@RequestBody VisitorRequest visitorRequest,
             @RequestParam(required = false) Long visitorId) {
-        return ResponseEntity.ok(visitorService.saveOrUpdateVisitor(visitorRequest, visitorId));
+        VisitorDTO visitorDTO = visitorService.saveOrUpdateVisitor(visitorRequest, visitorId);
+        if (visitorDTO == null){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(visitorDTO);
     }
 
     /**
