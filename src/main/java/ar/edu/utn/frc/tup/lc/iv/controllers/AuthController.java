@@ -31,11 +31,14 @@ public class AuthController {
      * @return list of authorizations.
      */
     @GetMapping
-    public List<AuthDTO> getAuth(@RequestParam(required = false) Long docNumber) {
-        if (docNumber == null) {
-            return authService.getAllAuths();
+    public List<AuthDTO> getAuth(@RequestParam(required = false) Long docNumber, @RequestParam(required = false) Long id) {
+        if (docNumber != null) {
+            return authService.getAuthsByDocNumber(docNumber);
         }
-        return authService.getAuthsByDocNumber(docNumber);
+        if (id != null) {
+            return authService.getAuthsById(id);
+        }
+        return authService.getAllAuths();
     }
 
     /**
@@ -73,6 +76,21 @@ public class AuthController {
         return ResponseEntity.ok(authService.createAuthorization(visitorAuthRequest, userId));
     }
 
+    @PutMapping("/authorization")
+    public ResponseEntity<AuthDTO> updateAuthorization(@RequestBody VisitorAuthRequest visitorAuthRequest, @RequestHeader("x-user-id") Long userId) {
+        return ResponseEntity.ok(authService.updateAuthorization(visitorAuthRequest, userId));
+    }
+
+    @DeleteMapping("/authorization")
+    public ResponseEntity<AuthDTO> updateAuthorization(@RequestHeader("auth-id") Long authId, @RequestHeader("x-user-id") Long userId) {
+        return ResponseEntity.ok(authService.deleteAuthorization(authId, userId));
+    }
+
+    @PutMapping("/authorization/activate")
+    public ResponseEntity<AuthDTO> activateAuthorization(@RequestHeader("auth-id") Long authId, @RequestHeader("x-user-id") Long userId) {
+        return ResponseEntity.ok(authService.activateAuthorization(authId, userId));
+    }
+
     /**
      * check if the visitor have access.
      *
@@ -83,4 +101,5 @@ public class AuthController {
     public ResponseEntity<Boolean> haveAutorization(@PathVariable Long docNumber) {
         return ResponseEntity.ok(authService.isAuthorized(docNumber));
     }
+
 }

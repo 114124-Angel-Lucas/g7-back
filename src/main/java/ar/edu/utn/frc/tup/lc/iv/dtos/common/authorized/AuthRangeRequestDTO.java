@@ -86,6 +86,9 @@ public class AuthRangeRequestDTO implements Serializable {
     @JsonProperty("plot_id")
     private Long plotId;
 
+    @JsonProperty("auth_range_id")
+    private Long auth_range_id;
+
     /**
      * Comment of the authorized range.
      */

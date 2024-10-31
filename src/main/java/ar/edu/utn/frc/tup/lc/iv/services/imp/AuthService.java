@@ -83,7 +83,7 @@ public class AuthService implements IAuthService {
     @Override
     public List<AuthDTO> getAllAuths() {
         List<AuthEntity> authEntities = authRepository.findAll()
-                .stream().filter(AuthEntity::isActive).toList();
+                .stream().toList();
         List<AuthDTO> authDTOs = new ArrayList<>();
 
         for (AuthEntity authEntity : authEntities) {
@@ -115,6 +115,20 @@ public class AuthService implements IAuthService {
     public List<AuthDTO> getAuthsByDocNumber(Long docNumber) {
         VisitorEntity visitorEntity = visitorRepository.findByDocNumber(docNumber);
         List<AuthEntity> authEntities = authRepository.findByVisitor(visitorEntity);
+        List<AuthDTO> authDTOs = new ArrayList<>();
+
+        for (AuthEntity authEntity : authEntities) {
+            AuthDTO authDTO = modelMapper.map(authEntity, AuthDTO.class);
+            List<AuthRangeDTO> authRangeDTOs = authRangeService.getAuthRangesByAuth(authEntity);
+            authDTO.setAuthRanges(authRangeDTOs);
+            authDTOs.add(authDTO);
+        }
+
+        return authDTOs;
+    }
+    @Override
+    public List<AuthDTO> getAuthsById(Long id) {
+        List<AuthEntity> authEntities = authRepository.findByAuthId(id);
         List<AuthDTO> authDTOs = new ArrayList<>();
 
         for (AuthEntity authEntity : authEntities) {
@@ -181,6 +195,56 @@ public class AuthService implements IAuthService {
         //TODO Si ya tiene auth validar que no se repita ahi se tiene que modificar
 
         return createNewAuthorization(visitorDTO, visitorAuthRequest, creatorID);
+    }
+
+    @Override
+    @Transactional
+    public AuthDTO updateAuthorization(VisitorAuthRequest visitorAuthRequest, Long creatorID) {
+            AuthEntity authEntity = authRepository.findByAuthId(visitorAuthRequest.getAuthId()).get(0);
+            authEntity.setVisitorType(visitorAuthRequest.getVisitorType());
+            authEntity.setActive(visitorAuthRequest.isActive());
+            authEntity.setPlotId(visitorAuthRequest.getPlotId());
+            authEntity.setExternalID(visitorAuthRequest.getExternalID());
+            authEntity = authRepository.save(authEntity);
+
+            AuthDTO authDTO = new AuthDTO();
+            authDTO.setPlotId(authEntity.getPlotId());
+            authDTO.setAuthId(authEntity.getAuthId());
+            authDTO.setVisitorType(authEntity.getVisitorType());
+            authDTO.setVisitor(modelMapper.map(authEntity.getVisitor(), VisitorDTO.class));
+            authDTO.setActive(authEntity.isActive());
+
+
+            if (visitorAuthRequest.getVisitorType() == VisitorType.PROVIDER || visitorAuthRequest.getVisitorType() == VisitorType.WORKER) {
+                authDTO.setAuthRanges(authRangeService.getAuthRangesByAuthExternalID(visitorAuthRequest.getExternalID()));
+            } else {
+                List<AuthRange> authorizedRangesList = authRangeService.updateAuthRanges(visitorAuthRequest.getAuthRangeRequest(),
+                        authEntity);
+                authDTO.setAuthRanges(authorizedRangesList.stream()
+                        .filter(Objects::nonNull)
+                        .map(auth -> modelMapper.map(auth, AuthRangeDTO.class))
+                        .collect(Collectors.toList()));
+            }
+
+
+        return authDTO;
+    }
+    @Override
+    @Transactional
+    public AuthDTO deleteAuthorization(Long authId, Long creatorID) {
+        AuthEntity authEntity = authRepository.findByAuthId(authId).get(0);
+        authEntity.setActive(false);
+
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public AuthDTO  activateAuthorization(Long authId, Long creatorID) {
+        AuthEntity authEntity = authRepository.findByAuthId(authId).get(0);
+        authEntity.setActive(true);
+
+        return null;
     }
 
     @Override

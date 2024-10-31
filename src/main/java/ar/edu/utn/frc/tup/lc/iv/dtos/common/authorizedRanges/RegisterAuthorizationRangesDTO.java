@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Setter;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ import java.util.List;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 @Data
 public class RegisterAuthorizationRangesDTO {
 
@@ -42,6 +44,9 @@ public class RegisterAuthorizationRangesDTO {
      */
     @JsonProperty("visitor_id")
     private Long visitorId;
+
+    @JsonProperty("range_id")
+    private Long rangeId;
 
     /**
      * Unique Authorized entity identifier.
@@ -91,5 +96,10 @@ public class RegisterAuthorizationRangesDTO {
     /**
      * Additional comments related to the authorized range.
      */
+    @JsonProperty("comment")
     private String comment;
+
+
+    @JsonProperty("is_active")
+    private boolean isActive;
 }

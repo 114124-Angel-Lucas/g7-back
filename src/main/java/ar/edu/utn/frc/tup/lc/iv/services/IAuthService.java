@@ -30,6 +30,7 @@ public interface IAuthService {
      * @return list of authorized persons.
      */
     List<AuthDTO> getAuthsByDocNumber(Long docNumber);
+    List<AuthDTO> getAuthsById(Long docNumber);
 
     /**
      * Retrieves a list of individual authorizations
@@ -56,6 +57,12 @@ public interface IAuthService {
      * @return authorization created.
      */
     AuthDTO createAuthorization(VisitorAuthRequest visitorAuthRequest, Long creatorID);
+
+    AuthDTO updateAuthorization(VisitorAuthRequest visitorAuthRequest, Long creatorID);
+
+    AuthDTO deleteAuthorization(Long authId, Long creatorID);
+
+    AuthDTO activateAuthorization(Long authId, Long creatorID);
 
     /**
      * Authorize visitor with authorized ranges.

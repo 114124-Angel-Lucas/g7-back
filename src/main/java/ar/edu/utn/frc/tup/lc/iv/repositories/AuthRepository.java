@@ -23,6 +23,7 @@ public interface AuthRepository extends JpaRepository<AuthEntity, Long> {
      */
     //find by doc number
     List<AuthEntity> findByVisitor(VisitorEntity visitor);
+    List<AuthEntity> findByAuthId(Long id);
     List<AuthEntity> findByVisitorType(VisitorType visitorType);
     List<AuthEntity> findByVisitorTypeAndExternalID(VisitorType visitor, Long externalID);
 

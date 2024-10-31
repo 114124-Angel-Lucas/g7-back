@@ -7,6 +7,7 @@ import ar.edu.utn.frc.tup.lc.iv.models.VisitorType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  * creating or updating an authorized range.
  */
 @Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class VisitorAuthRequest implements Serializable {
@@ -44,6 +46,13 @@ public class VisitorAuthRequest implements Serializable {
      */
     @JsonProperty("external_id")
     private Long externalID;
+
+    @JsonProperty("auth_id")
+    private Long authId;
+
+
+    @JsonProperty("is_active")
+    private boolean isActive;
 
     /**
      * Visitor request.

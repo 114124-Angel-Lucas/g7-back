@@ -56,6 +56,10 @@ public interface IAuthRangeService {
      */
     boolean isValidAuthRange(AuthRangeDTO authRangeDTO, LocalDate currentDate, LocalTime currentTime);
 
+
+    List<AuthRange> updateAuthRanges(List<AuthRangeRequestDTO> authRangeRequests,
+                                     AuthEntity authEntity);
+
     /**
      * Retrieves a list of valid authorization ranges.
      *

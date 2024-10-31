@@ -104,6 +104,29 @@ public class AuthRangeService implements IAuthRangeService {
 
             registerAuthorizationRangesDTO.setAuthEntityId(authEntity.getAuthId());
             registerAuthorizationRangesDTO.setVisitorId(visitorDTO.getVisitorId());
+            registerAuthorizationRangesDTO.setActive(true);
+
+            // Registro cada rango de autorización
+            AuthRange authorizedRanges = registerAuthorizedRange(registerAuthorizationRangesDTO);
+            authorizedRangesList.add(authorizedRanges);
+        }
+
+        return authorizedRangesList;
+    }
+
+    @Override
+    public List<AuthRange> updateAuthRanges(List<AuthRangeRequestDTO> authRangeRequests,
+                                            AuthEntity authEntity) {
+
+        List<AuthRange> authorizedRangesList = new ArrayList<>();
+
+        for (AuthRangeRequestDTO authRangeRequest : authRangeRequests) {
+            RegisterAuthorizationRangesDTO registerAuthorizationRangesDTO = modelMapper.map(authRangeRequest,
+                    RegisterAuthorizationRangesDTO.class);
+
+            registerAuthorizationRangesDTO.setAuthEntityId(authEntity.getAuthId());
+            registerAuthorizationRangesDTO.setRangeId(authRangeRequest.getAuth_range_id());
+            registerAuthorizationRangesDTO.setActive(authRangeRequest.isActive());
 
             // Registro cada rango de autorización
             AuthRange authorizedRanges = registerAuthorizedRange(registerAuthorizationRangesDTO);
@@ -120,7 +143,7 @@ public class AuthRangeService implements IAuthRangeService {
         }
 
         AuthRangeEntity authRangeEntity = modelMapper.map(authorizedRangeDTO, AuthRangeEntity.class);
-        authRangeEntity.setActive(true);
+        authRangeEntity.setAuthRangeId(authorizedRangeDTO.getRangeId());
 
         if (authorizedRangeDTO.getAuthEntityId() != null && authorizedRangeDTO.getAuthEntityId() != 0L) {
             Optional<AuthEntity> authEntity = authRepository.findById(authorizedRangeDTO.getAuthEntityId());
