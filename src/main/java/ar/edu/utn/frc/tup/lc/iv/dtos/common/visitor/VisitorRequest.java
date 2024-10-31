@@ -1,6 +1,7 @@
 package ar.edu.utn.frc.tup.lc.iv.dtos.common.visitor;
 
 import ar.edu.utn.frc.tup.lc.iv.models.DocumentType;
+import ar.edu.utn.frc.tup.lc.iv.models.VisitorType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -57,4 +58,7 @@ public class VisitorRequest implements Serializable {
      */
     @JsonProperty("is_active")
     private boolean isActive;
+
+    @JsonProperty("visitor_type")
+    private VisitorType visitorType;
 }
